@@ -1,6 +1,4 @@
 const lightTheme = {
-
-
   "5aba3bb97c3d600ba0b56ff9c50974cedd3e90a1":{
     componentName: "Bleach [day]", 
     mapsToKey: "acef42c8b81ccafb5947bf73b53f353a9641530b"
