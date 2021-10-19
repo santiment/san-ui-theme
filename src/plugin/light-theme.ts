@@ -159,10 +159,6 @@ const lightTheme = {
   },
 
 
-
-
-
-
    "319a1d212992b51880354214d0ac18381d6e2b8b":{
     componentName: "Bright Sun 01 [day]", 
     mapsToKey: "a5b78d0a7c0c161db2c99e8efbdad097b072fb93"  
