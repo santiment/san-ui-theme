@@ -166,7 +166,13 @@ const lightTheme = {
    "319a1d212992b51880354214d0ac18381d6e2b8b":{
     componentName: "Bright Sun 01 [day]", 
     mapsToKey: "a5b78d0a7c0c161db2c99e8efbdad097b072fb93"  
+  },
+
+   "b43202200a0579ff8ee14664cdebd3d625a948bc":{
+    componentName: "Whale [day]", 
+    mapsToKey: "921abc54cf8250bb0b89a36016e88bceccd9d6b1"  
   }
+
 };
 
 export { lightTheme };

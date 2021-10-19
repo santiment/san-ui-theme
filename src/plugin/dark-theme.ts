@@ -170,6 +170,13 @@ const darkTheme = {
    "a5b78d0a7c0c161db2c99e8efbdad097b072fb9":{
     componentName: "Bright Sun 01 [night]", 
     mapsToKey: "319a1d212992b51880354214d0ac18381d6e2b8b3"  
+  },
+
+
+   "921abc54cf8250bb0b89a36016e88bceccd9d6b1":{
+    componentName: "Whale [night]", 
+    mapsToKey: "b43202200a0579ff8ee14664cdebd3d625a948bc"  
   }
+
 };
 export { darkTheme };
