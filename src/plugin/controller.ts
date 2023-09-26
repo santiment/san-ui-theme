@@ -2,8 +2,8 @@
 figma.showUI(__html__, { width: 320, height: 358 });
 
 // Imported themes
-import { darkTheme } from "./dark-theme";
-import { lightTheme } from "./light-theme";
+import { darkTheme } from "./dark-to-light-theme";
+import { lightTheme } from "./light-to-dark-theme";
 
 // Utility function for serializing nodes to pass back to the UI.
 function serializeNodes(nodes) {
@@ -120,6 +120,30 @@ figma.ui.onmessage = msg => {
     }
   }
 
+  // Fix layers with no style attached to them, just hex colors
+  async function fixStyles(
+    node,
+    nodeType,
+    style,
+    mappings,
+    applyStyle: (node, styleId) => void
+  ) {
+    let styleName = nodeType.toLowerCase() + " " + style;
+    console.log(styleName);
+    // See if the key matches anything in the mappings object.
+    if (mappings[styleName] !== undefined) {
+      let mappingStyle = mappings[styleName];
+
+      // Use the mapping value to fetch the official style.
+      let newStyle = await figma.importStyleByKeyAsync(mappingStyle.mapsToKey);
+
+      // Update the node with the new color.
+      applyStyle(node, newStyle.id);
+    } else {
+      skippedLayers.push(node);
+    }
+  }
+
   async function replaceComponent(
     node,
     key,
@@ -146,6 +170,16 @@ figma.ui.onmessage = msg => {
   async function replaceFills(node, style, mappings) {
     await replaceStyles(
       node,
+      style,
+      mappings,
+      (node, styleId) => (node.fillStyleId = styleId)
+    );
+  }
+
+  async function replaceNoStyleFill(node, nodeType, style, mappings) {
+    await fixStyles(
+      node,
+      nodeType,
       style,
       mappings,
       (node, styleId) => (node.fillStyleId = styleId)
@@ -197,6 +231,13 @@ figma.ui.onmessage = msg => {
             // Pass in the layer we want to change, the style ID the node is using.
             // and the set of mappings we want to check against.
             replaceFills(node, style, theme);
+          } else if (node.fillStyleId === "") {
+            // No style on the layer? Let's fix it for them.
+            // First we need the fill type determined above ex:is it #ffffff?), then
+            // we pass that hex into a new function.
+            let style = determineFill(node.fills);
+            let nodeType = node.type;
+            replaceNoStyleFill(node, nodeType, style, theme);
           } else {
             skippedLayers.push(node);
           }
@@ -219,6 +260,32 @@ figma.ui.onmessage = msg => {
         if (theme[componentKey] !== undefined) {
           swapComponent(node, componentKey, theme);
         } else {
+          if (node.fills) {
+            if (node.fillStyleId && typeof node.fillStyleId !== "symbol") {
+              let style = figma.getStyleById(node.fillStyleId);
+              // Pass in the layer we want to change, the style ID the node is using.
+              // and the set of mappings we want to check against.
+              replaceFills(node, style, theme);
+            } else if (node.fillStyleId === "") {
+              // No style on the layer? Let's fix it for them.
+              // First we need the fill type determined above ex:is it #ffffff?), then
+              // we pass that hex into a new function.
+              let style = determineFill(node.fills);
+              let nodeType = node.type;
+              replaceNoStyleFill(node, nodeType, style, theme);
+            } else {
+              skippedLayers.push(node);
+            }
+          }
+
+          if (node.strokeStyleId) {
+            replaceStrokes(node, figma.getStyleById(node.strokeStyleId), theme);
+          }
+
+          if (node.effectStyleId) {
+            replaceEffects(node, figma.getStyleById(node.effectStyleId), theme);
+          }
+
           if (node.children) {
             node.children.forEach(child => {
               updateTheme(child, theme);
@@ -230,6 +297,10 @@ figma.ui.onmessage = msg => {
       case "TEXT": {
         if (node.fillStyleId && typeof node.fillStyleId !== "symbol") {
           replaceFills(node, figma.getStyleById(node.fillStyleId), theme);
+        } else if (node.fillStyleId === "") {
+          let style = determineFill(node.fills);
+          let nodeType = node.type;
+          replaceNoStyleFill(node, nodeType, style, theme);
         } else {
           skippedLayers.push(node);
         }
@@ -238,5 +309,50 @@ figma.ui.onmessage = msg => {
         // do nothing
       }
     }
+  }
+
+  // Determine a nodes fills
+  function determineFill(fills) {
+    let fillValues = [];
+    let rgbObj;
+
+    fills.forEach(fill => {
+      if (fill.type === "SOLID" && fill.visible === true) {
+        rgbObj = convertColor(fill.color);
+        fillValues.push(RGBToHex(rgbObj["r"], rgbObj["g"], rgbObj["b"]));
+      }
+    });
+
+    return fillValues[0];
+  }
+
+  // Utility functions for color conversion.
+  function convertColor(color) {
+    const colorObj = color;
+    const figmaColor = {};
+
+    Object.entries(colorObj).forEach(cf => {
+      const [key, value] = cf;
+
+      if (["r", "g", "b"].includes(key)) {
+        figmaColor[key] = (255 * (value as number)).toFixed(0);
+      }
+      if (key === "a") {
+        figmaColor[key] = value;
+      }
+    });
+    return figmaColor;
+  }
+
+  function RGBToHex(r, g, b) {
+    r = Number(r).toString(16);
+    g = Number(g).toString(16);
+    b = Number(b).toString(16);
+
+    if (r.length == 1) r = "0" + r;
+    if (g.length == 1) g = "0" + g;
+    if (b.length == 1) b = "0" + b;
+
+    return "#" + r + g + b;
   }
 };
