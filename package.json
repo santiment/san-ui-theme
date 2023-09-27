@@ -1,7 +1,7 @@
 {
-	"name": "figma-plugin-react-template",
+	"name": "san-ui-theme",
 	"version": "1.0.0",
-	"description": "This plugin template uses Typescript. If you are familiar with Javascript, Typescript will look very familiar. In fact, valid Javascript code is already valid Typescript code.",
+	"description": "The figma plugin to automatically change light/dark theme of component.",
 	"license": "ISC",
 	"scripts": {
 		"build": "node node_modules/.bin/webpack --mode=production",
