@@ -1,8 +1,10 @@
 {
   "name": "Auto Theme",
-  "id": "816463256448925575",
+  "id": "1289484131098489155",
   "api": "1.0.0",
   "main": "dist/code.js",
   "ui": "dist/ui.html",
-  "editorType": ["figma"]
+  "editorType": [
+    "figma"
+  ]
 }
