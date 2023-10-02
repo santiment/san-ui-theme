@@ -8,14 +8,18 @@ A figma plugin for automatically theming your designs from one color mapping to 
 
 ## Prerequisites
 * Git
-* Node 18+ ([Install](https://nodejs.org/en))
+* Node 14 — 16
 
 ## Install plugin in Figma
-* Follow the instructions for running locally (Run `npm run build` except of `npm run build:watch` to build the plugin)
+* Download the `latest` version from ["Relases"](https://github.com/santiment/san-ui-theme/releases) page
+
+* Extract zip somewhere
 
 * Add plugin to Figma
   * Open Figma -> Plugins -> Development -> Import plugin from manifest...
   * Choose `manifest.json` file in `san-ui-theme` folder
+
+* To update plugin repeat steps above. You can now delete previous version folder
 
 ## Update themes
 To add new colors follow this steps:
@@ -34,6 +38,7 @@ To add new colors follow this steps:
 To remove old color simply delete corresponding `Theme Object` from `light-to-dark-theme.ts` and `dark-to-light-theme.ts` files
 
 More on what the `Theme Object` is will be discussed further in the corresponding section.
+
 
 ### Example:
 For example, you are modifying `light-to-dark-theme.ts` file first. You should add `Theme Object` entry with `style_key` equal to key of light theme color, `mapToKey` value should be key of corresponding dark theme color to switch with. `name` field is name of light theme color from figma and `mapsToName` is name of corresponding dark theme color. `name` and `mapsToName` are optional but they are here for your convenience and to help recognize what is what.
@@ -74,7 +79,17 @@ Color keys can be obtained through [Inspector Plugin](https://www.figma.com/comm
 * Open inspector plugin (right mouse click -> plugins -> inspector)
 * Find `Style Key` for desirable color
 
-
+## Update plugin on Github
+  * Commit your changes:
+  ```
+    git add .
+    git commit -m "Describe your changes here"
+    git push
+  ```
+  * Update release version of plugin
+    * Run `npm i` to install all packages if you changes `package.json` file
+    * Run `npm run build`
+    * Compress plugin directory to `zip` and upload to github as new release
 
 ## How to run locally
 
