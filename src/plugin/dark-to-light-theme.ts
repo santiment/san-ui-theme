@@ -68,6 +68,13 @@ const darkTheme = {
     mapsToKey: "fdddf02d362db397a25104bc7c37e387f7d18bba"
   },
 
+  b344ab32c754f264420f544f4edc1a8bbf9ba47a: {
+    name: "Jungle Green 04 [night]",
+    mapsToKey: "ed42eebc55d14674856ec5335f948d7f14cd100e"
+  },
+
+
+
   // -------- Persimmon ---------
 
   d3ef0c3a125ef4b071210cd656c4740d891b511f: {

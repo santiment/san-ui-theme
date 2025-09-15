@@ -68,6 +68,13 @@ const lightTheme = {
     mapsToKey: "4bba5a61ff33c54d675360fab38190797eb632df"
   },
 
+
+  ed42eebc55d14674856ec5335f948d7f14cd100e: {
+    name: "Jungle Green 04 [day]",
+    mapsToKey: "b344ab32c754f264420f544f4edc1a8bbf9ba47a"
+  },
+
+
   // -------- Persimmon ---------
 
   "50566bd8f0c71bb80c6cbda039564f4e8646f49d": {
